@@ -1,4 +1,4 @@
-import { API_URL, LATEST } from './api-routes';
+import { API_URL, LATEST } from '../api-routes';
 
 // https://api.exchangeratesapi.io/latest?base=EUR
 

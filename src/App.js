@@ -1,9 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Pocket from './pocket';
+import ExchangeWidget from './components/exchange-widget'
+
 
 function App() {
   return (
@@ -22,31 +20,8 @@ function App() {
           Learn React
         </a>
       </header> */}
-      <Pocket></Pocket>
-      <Pocket></Pocket>
-      {/* <Button variant="contained" color="primary">
-        Hello World
-      </Button>
+      <ExchangeWidget></ExchangeWidget>
 
-      <TextField
-        id="outlined-number"
-        label="Number"
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="outlined"
-      />
-
-      <TextField
-        id="outlined-number"
-        label="Number"
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="outlined"
-      /> */}
     </div>
   );
 }
