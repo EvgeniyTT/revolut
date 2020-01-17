@@ -1,25 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ExchangePocket from '../exchange-pocket';
 import { fetchRates } from '../../services';
-import { pockets } from '../../pockets-data';
+import {
+  selectPocketFrom,
+  selectPocketTo,
+} from '../../store/actions';
+import { pockets } from '../../store/pockets-data';
+import './styles.css';
 
-
-
-const scaleNames = {
-  c: 'Celsius',
-  f: 'Fahrenheit'
-};
-
-function toCelsius(fahrenheit) {
-  return (fahrenheit - 32) * 5 / 9;
-}
-
-function toFahrenheit(celsius) {
-  return (celsius * 9 / 5) + 32;
-}
-
-function tryConvert(temperature, convert) {
-  const input = parseFloat(temperature);
+function tryConvert(amount, convert) {
+  const input = parseFloat(amount);
   if (Number.isNaN(input)) {
     return '';
   }
@@ -28,71 +21,86 @@ function tryConvert(temperature, convert) {
   return rounded.toString();
 }
 
-function BoilingVerdict(props) {
-  if (props.celsius >= 100) {
-    return <p>The water would boil.</p>;
-  }
-  return <p>The water would not boil.</p>;
-}
 
-class ExchangeWidget extends React.Component {
+class _ExchangeWidget extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { temperature: '', scale: 'c', exchangeRate: 1, currencyFrom: '', currencyTo: ''};
+    this.state = { amount: '', scale: 'c', exchangeRate: 1 };
   }
 
-  handlePocketFromChange = (pocketId) => {
-    const selectedPocket = pockets.find(pocket => pocket.id === pocketId);
-    console.log('selectedPocket: ', selectedPocket);
-    
-    fetchRates(selectedPocket.currency).then(res => {
-      this.rates = res.rates;
-      this.setState({ 
-        currencyFrom: selectedPocket.currency,
-        exchangeRate: res.rates[this.state.currencyTo] || 1
-      })
-    })
+  // componentDidMount() {
+  //   this.props.fetchQuotes();
+  // }
 
+  handlePocketFromChange = selectedPocket => {
+    this.props.fetchRates(selectedPocket.currency);
+    this.props.selectPocketFrom(selectedPocket);
   }
 
-  handlePocketToChange = () => {
-    
+  handlePocketToChange = selectedPocket => {
+    this.props.selectPocketTo(selectedPocket);
   }
 
-  handleValueFromChange = (temperature) => {
-    this.setState({scale: 'c', temperature});
+  handleValueFromChange = (amount) => {
+    this.setState({ isFromPersistent: true, amount });
   }
 
-  handleValueToChange = (temperature) => {
-    this.setState({scale: 'f', temperature});
+  handleValueToChange = (amount) => {
+    this.setState({ isFromPersistent: false, amount });
   }
 
   render() {
-    const scale = this.state.scale;
-    const temperature = this.state.temperature;
-    const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
-    const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+    console.log('rates: ', this.props.rates);
+    console.log('exchangeRate: ', this.props.exchangeRate);
+    const { exchangeRate, pocketFrom, pocketTo } = this.props;
+    const { isFromPersistent, amount } = this.state;
+
+    const amountFrom = isFromPersistent ? amount : tryConvert(amount, a => a / exchangeRate);
+    const amountTo = isFromPersistent ? tryConvert(amount, a => a * exchangeRate) : amount;
 
     return (
-      <div>
+      
+      <div className="exchange-widget">
         <ExchangePocket
+          isFromPocket
           pockets={pockets}
-          scale="c"
-          temperature={celsius}
+          amount={amountFrom}
           onPocketChange={this.handlePocketFromChange}
           onValueChange={this.handleValueFromChange} />
+        <div className="exchange-rate">100 {pocketFrom.currency} = {100 * exchangeRate} {pocketTo.currency}</div>
         <ExchangePocket
           pockets={pockets}
-          scale="f"
-          temperature={fahrenheit}
+          amount={amountTo}
           onPocketChange={this.handlePocketToChange}
           onValueChange={this.handleValueToChange} />
-        <BoilingVerdict
-          celsius={parseFloat(celsius)} />
       </div>
     );
   }
 }
 
+_ExchangeWidget.propTypes = {
+  // author: PropTypes.shape({
+  //   description: PropTypes.object,
+  //   github: PropTypes.string,
+  //   linkedIn: PropTypes.string,
+  //   name: PropTypes.string,
+  // })
+};
+
+const mapStateToProps = state => ({
+  pocketFrom: state.pocketFrom,
+  pocketTo: state.pocketTo,
+  rates: state.rates,
+  exchangeRate: state.exchangeRate,
+});
+
+export const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchRates,
+  selectPocketFrom,
+  selectPocketTo
+}, dispatch)
+
+const ExchangeWidget = connect(mapStateToProps, mapDispatchToProps)(_ExchangeWidget);
 
 export default ExchangeWidget;
