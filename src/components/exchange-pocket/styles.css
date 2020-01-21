@@ -10,29 +10,46 @@
   background-size: contain;
 }
 
-.pocket__label {
+.label {
   margin-top: 54px;
   align-self: flex-start;
   font-size: 24px;
   color: #ccc;
 }
 
-.pocket__select {
+.select {
   width: 250px;
 }
 
-.pocket__amount {
+.amount {
   align-self: flex-start;
   display: flex;
   align-items: baseline;
-  margin-top: 4px;
+  margin-left: 24px;
+  margin-top: 16px;
 }
 
-.pocket__amount-input {
-  width: 130px;
+.amount-input {
+  width: 100px;
   margin-top: 14px !important;
 }
 
-.pocket__amount-currency {
+.amount-currency {
+  margin-left: 10px;
+}
 
+.calculation {
+  margin-top: 44px;
+}
+
+.diff- {
+  color: red;
+}
+
+.diff\+ {
+  color: green;
+}
+
+.total {
+  font-weight: bold;
 }

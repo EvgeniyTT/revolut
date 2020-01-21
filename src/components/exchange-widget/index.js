@@ -5,36 +5,23 @@ import { bindActionCreators } from 'redux';
 import ExchangePocket from '../exchange-pocket';
 import { fetchRates } from '../../services';
 import {
+  exchange,
   selectPocketFrom,
   selectPocketTo,
 } from '../../store/actions';
-import { pockets } from '../../store/pockets-data';
+import { tryConvert, parseToTwoDecimal } from '../../helpers';
+import Button from '@material-ui/core/Button';
 import './styles.css';
-
-function tryConvert(amount, convert) {
-  const input = parseFloat(amount);
-  if (Number.isNaN(input)) {
-    return '';
-  }
-  const output = convert(input);
-  const rounded = Math.round(output * 1000) / 1000;
-  return rounded.toString();
-}
-
 
 class _ExchangeWidget extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { amount: '', scale: 'c', exchangeRate: 1 };
+    this.state = { amount: '0.00', isFromPersistent: true };
   }
 
-  // componentDidMount() {
-  //   this.props.fetchQuotes();
-  // }
-
   handlePocketFromChange = selectedPocket => {
-    this.props.fetchRates(selectedPocket.currency);
     this.props.selectPocketFrom(selectedPocket);
+    this.props.fetchRates(selectedPocket.currency);
   }
 
   handlePocketToChange = selectedPocket => {
@@ -42,7 +29,7 @@ class _ExchangeWidget extends React.Component {
   }
 
   handleValueFromChange = (amount) => {
-    this.setState({ isFromPersistent: true, amount });
+    this.setState({ isFromPersistent: true, amount});
   }
 
   handleValueToChange = (amount) => {
@@ -50,14 +37,14 @@ class _ExchangeWidget extends React.Component {
   }
 
   render() {
-
-    console.log('rates: ', this.props.rates);
-    console.log('exchangeRate: ', this.props.exchangeRate);
-    const { exchangeRate, pocketFrom, pocketTo } = this.props;
+    const { pockets, exchangeRate, pocketFrom, pocketTo, exchange } = this.props;
     const { isFromPersistent, amount } = this.state;
 
-    const amountFrom = isFromPersistent ? amount : tryConvert(amount, a => a / exchangeRate);
-    const amountTo = isFromPersistent ? tryConvert(amount, a => a * exchangeRate) : amount;
+    const amountFrom = parseToTwoDecimal(isFromPersistent ? amount : tryConvert(amount, a => a / exchangeRate));
+    const amountTo = parseToTwoDecimal(isFromPersistent ? tryConvert(amount, a => a * exchangeRate) : amount);
+
+    const totalFrom = parseToTwoDecimal(parseFloat(pocketFrom.amount || 0) - (amountFrom || 0));
+    const totalTo = parseToTwoDecimal(parseFloat(pocketTo.amount || 0) + (amountTo || 0));
 
     return (
       
@@ -65,13 +52,32 @@ class _ExchangeWidget extends React.Component {
         <ExchangePocket
           isFromPocket
           pockets={pockets}
-          amount={amountFrom}
+          selectedPocket={pocketFrom}
+          amount={amountFrom.toString()}
+          total={totalFrom}
           onPocketChange={this.handlePocketFromChange}
           onValueChange={this.handleValueFromChange} />
-        <div className="exchange-rate">100 {pocketFrom.currency} = {100 * exchangeRate} {pocketTo.currency}</div>
+
+        <div className="exchange">
+          <span className="exchange-rate-label">Exchange rate</span>
+          <div className="exchange-rate">100 {pocketFrom.currency} = {(100 * exchangeRate).toFixed(2)} {pocketTo.currency}</div>
+          <Button variant="contained" color="primary" onClick={
+            () => { exchange({
+              pocketFrom,
+              totalFrom,
+              pocketTo,
+              totalTo
+            })} 
+          }>
+            Exchange
+          </Button>
+        </div>
+
         <ExchangePocket
           pockets={pockets}
-          amount={amountTo}
+          selectedPocket={pocketTo}
+          amount={amountTo.toString()}
+          total={totalTo}
           onPocketChange={this.handlePocketToChange}
           onValueChange={this.handleValueToChange} />
       </div>
@@ -89,6 +95,7 @@ _ExchangeWidget.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  pockets: state.pockets,
   pocketFrom: state.pocketFrom,
   pocketTo: state.pocketTo,
   rates: state.rates,
@@ -98,7 +105,8 @@ const mapStateToProps = state => ({
 export const mapDispatchToProps = dispatch => bindActionCreators({
   fetchRates,
   selectPocketFrom,
-  selectPocketTo
+  selectPocketTo,
+  exchange,
 }, dispatch)
 
 const ExchangeWidget = connect(mapStateToProps, mapDispatchToProps)(_ExchangeWidget);

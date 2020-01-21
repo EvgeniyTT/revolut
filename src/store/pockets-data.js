@@ -1,4 +1,4 @@
-export const pockets = [
+export const initialPockets = [
   {
     id: 1,
     name: 'pocket1',

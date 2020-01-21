@@ -2,3 +2,19 @@
   display: flex;
   align-items: center;
 }
+
+.exchange {
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.exchange-rate-label {
+  font-weight: bold;
+}
+
+.exchange-rate {
+  font-style: italic;
+  margin-bottom: 10px;
+}
+

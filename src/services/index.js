@@ -1,20 +1,19 @@
-import { API_URL, LATEST } from '../api-routes';
+import { API_URI, LATEST_URI } from '../api-routes';
+import { receiveRates } from '../store/actions';
 
-import { receiveQuotes, receiveRates } from '../store/actions';
-// import fetchJsonp from 'fetch-jsonp';
+let intervalId;
+const FETCH_RATES_TIME_INTERVAL = 1000; // can be changed to 10 000 to meet requirements
 
-// https://api.exchangeratesapi.io/latest?base=EUR
-
-export const fetchRates = baseCurrency => dispatch => 
-  fetch(`${API_URL}${LATEST}?base=${baseCurrency}`)
+export const fetchRates = baseCurrency => dispatch => {
+  if (intervalId) {
+    clearInterval(intervalId);
+  }
+  intervalId = setInterval(() => {
+    fetch(`${API_URI}${LATEST_URI}?base=${baseCurrency}`)
     .then(res => res.json())
-    .then(res => dispatch(receiveRates(res.rates)));
-    // TODO: handle errors
+    .then(res => dispatch(receiveRates(res.rates)))
+    // TODO: handle errors, redirect to the error page \ show notification, log the error
+    .catch(err => { console.error(err) });
+  }, FETCH_RATES_TIME_INTERVAL)
+}
 
-export const fetchQuotes = () => dispatch => 
-  fetch(
-    'http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=10',
-    { jsonpCallback: '_jsonp' }
-  )
-    .then(res => res.json())
-    .then(quotes => dispatch(receiveQuotes(quotes)))

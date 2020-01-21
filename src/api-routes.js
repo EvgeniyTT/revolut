@@ -1,2 +1,2 @@
-export const API_URL = 'https://api.exchangeratesapi.io';
-export const LATEST = '/latest';
+export const API_URI = 'https://api.exchangeratesapi.io';
+export const LATEST_URI = '/latest';
