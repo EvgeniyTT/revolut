@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Input from '@material-ui/core/Input';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
+import {pocketType} from '../../types';
 import './styles.css';
 
 class ExchangePocket extends React.Component {
-
-  handleChange = (e) => {
+  handleAmountChange = (e) => {
     this.props.onValueChange(e.target.value);
   }
 
@@ -16,11 +17,11 @@ class ExchangePocket extends React.Component {
   }
 
   render() {
-    const { amount, total, pockets, isFromPocket, selectedPocket } = this.props;
+    const {amount, total, pockets, isFromPocket, selectedPocket} = this.props;
 
     const label = isFromPocket ? 'FROM' : 'TO';
     const action = isFromPocket ? '-' : '+';
-    
+
     return (
       <div className="pocket">
         <div className="label">{label}</div>
@@ -34,13 +35,13 @@ class ExchangePocket extends React.Component {
           ))}
         </Select>
 
-        <div className="amount"> 
+        <div className="amount">
           <Input
             className="amount-input"
             type="number"
             value={amount}
             min="0"
-            onChange={this.handleChange} 
+            onChange={this.handleAmountChange}
           />
           <span className="amount-currency">{selectedPocket.currency}</span>
         </div>
@@ -55,5 +56,15 @@ class ExchangePocket extends React.Component {
     );
   }
 }
+
+ExchangePocket.propTypes = {
+  pockets: PropTypes.arrayOf(pocketType),
+  selectedPocket: pocketType,
+  isFromPocket: PropTypes.bool,
+  amount: PropTypes.string,
+  total: PropTypes.number,
+  onValueChange: PropTypes.func,
+  onPocketChange: PropTypes.func,
+};
 
 export default ExchangePocket;

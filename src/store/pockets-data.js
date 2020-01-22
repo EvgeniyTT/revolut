@@ -17,4 +17,4 @@ export const initialPockets = [
     currency: 'GBP',
     amount: 412.32,
   },
-]
+];

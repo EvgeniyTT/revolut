@@ -1,15 +1,13 @@
-import { createStore, applyMiddleware } from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import { initialPockets } from '../pockets-data';
-
+import {initialPockets} from '../pockets-data';
 import {
   EXCHANGE,
   RECEIVE_RATES,
   SELECT_POCKET_FROM,
   SELECT_POCKET_TO,
 } from '../actions';
-
-import { getExchangeRate } from '../../helpers';
+import {getExchangeRate} from '../../utils/helpers';
 
 const initialState= {
   exchangeRate: 1,
@@ -20,11 +18,10 @@ const initialState= {
 
 export const reducer = (state = initialState, action, storeState) => {
   switch (action.type) {
-
     case SELECT_POCKET_FROM:
       return {
         ...state,
-        pocketFrom: action.pocket
+        pocketFrom: action.pocket,
       };
 
     case SELECT_POCKET_TO:
@@ -38,25 +35,25 @@ export const reducer = (state = initialState, action, storeState) => {
       return {
         ...state,
         rates: action.rates,
-        // TODO: blow up if there is no exchange rate for this currency 
+        // TODO: blow up if there is no exchange rate for this currency
         exchangeRate: getExchangeRate(action.rates, state.pocketTo.currency),
       };
 
     case EXCHANGE:
-      const pocketFrom = { ...action.pocketFrom, amount: action.totalFrom };
-      const pocketTo = { ...action.pocketTo, amount: action.totalTo };
-      const pockets = state.pockets.map(pocket => pocket.id === pocketFrom.id 
-        ? pocketFrom
-        : pocket.id === pocketTo.id 
-          ? pocketTo
-          : pocket
-      )
+      const pocketFrom = {...action.pocketFrom, amount: action.totalFrom};
+      const pocketTo = {...action.pocketTo, amount: action.totalTo};
+      const pockets = state.pockets.map(pocket => pocket.id === pocketFrom.id ?
+        pocketFrom :
+        pocket.id === pocketTo.id ?
+          pocketTo :
+          pocket,
+      );
 
       return {
         ...state,
         pocketFrom,
         pocketTo,
-        pockets
+        pockets,
       };
 
     default:

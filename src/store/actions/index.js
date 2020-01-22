@@ -1,15 +1,15 @@
-
 export const RECEIVE_RATES = 'RECEIVE_RATES';
 export const SELECT_POCKET_FROM = 'SELECT_POCKET_FROM';
 export const SELECT_POCKET_TO = 'SELECT_POCKET_TO';
 export const EXCHANGE = 'EXCHANGE';
 
-export const exchange = ({ pocketFrom, pocketTo, totalFrom, totalTo }) => ({
+export const exchange = ({pocketFrom, pocketTo, totalFrom, totalTo}) => ({
+  // TODO: make an API call, show some snackbar on response
   type: EXCHANGE,
   pocketFrom,
   totalFrom,
   pocketTo,
-  totalTo
+  totalTo,
 });
 
 export const selectPocketFrom = pocket => ({
@@ -24,5 +24,5 @@ export const selectPocketTo = pocket => ({
 
 export const receiveRates = rates => ({
   type: RECEIVE_RATES,
-  rates
+  rates,
 });
