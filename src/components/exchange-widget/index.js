@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Button from '@material-ui/core/Button';
-import ExchangePocket from '../exchange-pocket';
 import {fetchRates} from '../../services';
 import {tryConvert, parseToTwoDecimal} from '../../utils/helpers';
 import {
@@ -12,7 +11,10 @@ import {
   selectPocketTo,
 } from '../../store/actions';
 import {pocketType} from '../../types';
+import ExchangePocket from '../exchange-pocket';
 import './styles.css';
+
+export const exchangeButtonTestId = 'exchange';
 
 class _ExchangeWidget extends React.Component {
   constructor(props) {
@@ -47,10 +49,10 @@ class _ExchangeWidget extends React.Component {
     const totalFrom = parseToTwoDecimal(parseFloat(pocketFrom.amount || 0) - (amountFrom || 0));
     const totalTo = parseToTwoDecimal(parseFloat(pocketTo.amount || 0) + (amountTo || 0));
 
-    const canExchange = totalFrom > 0 &&
+    const canExchange = amountFrom > 0 &&
+                        amountTo > 0 &&
                         pocketTo.id !== pocketFrom.id &&
-                        amountFrom > 0 &&
-                        amountTo > 0;
+                        totalFrom > 0;
 
     return (
       <div className="exchange-widget">
@@ -68,16 +70,14 @@ class _ExchangeWidget extends React.Component {
           <div className="exchange-rate">
             100 {pocketFrom.currency} = {(100 * exchangeRate).toFixed(2)} {pocketTo.currency}
           </div>
-          <Button variant="contained" color="primary" disabled={!canExchange} onClick={
-            () => {
-              exchange({
-                pocketFrom,
-                totalFrom,
-                pocketTo,
-                totalTo,
-              });
-            }
-          }>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!canExchange}
+            data-testid={exchangeButtonTestId}
+            onClick={() => {
+              exchange({pocketFrom, totalFrom, pocketTo, totalTo});
+            } }>
             Exchange
           </Button>
         </div>
@@ -97,8 +97,8 @@ class _ExchangeWidget extends React.Component {
 _ExchangeWidget.propTypes = {
   pockets: PropTypes.arrayOf(pocketType),
   exchangeRate: PropTypes.number,
-  pocketFrom: pocketType,
-  pocketTo: pocketType,
+  pocketFrom: PropTypes.oneOfType([pocketType, PropTypes.shape({})]),
+  pocketTo: PropTypes.oneOfType([pocketType, PropTypes.shape({})]),
   exchange: PropTypes.func,
   selectPocketFrom: PropTypes.func,
   selectPocketTo: PropTypes.func,

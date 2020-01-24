@@ -1,18 +1,18 @@
 export const initialPockets = [
   {
-    id: 1,
+    id: '1',
     name: 'pocket1',
     currency: 'USD',
     amount: 134.87,
   },
   {
-    id: 2,
+    id: '2',
     name: 'pocket2',
     currency: 'EUR',
     amount: 14.11,
   },
   {
-    id: 3,
+    id: '3',
     name: 'pocket3',
     currency: 'GBP',
     amount: 412.32,

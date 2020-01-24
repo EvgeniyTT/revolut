@@ -9,9 +9,10 @@ import {
 } from '../actions';
 import {getExchangeRate} from '../../utils/helpers';
 
-const initialState= {
+export const initialState= {
   exchangeRate: 1,
   pockets: initialPockets,
+  // TODO: better to keep pocketFromId and pocketToId instead of objects
   pocketFrom: {},
   pocketTo: {},
 };
