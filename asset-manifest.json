@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/revolut/static/css/main.c7f164f3.chunk.css",
+    "main.js": "/revolut/static/js/main.465449a3.chunk.js",
+    "main.js.map": "/revolut/static/js/main.465449a3.chunk.js.map",
+    "runtime-main.js": "/revolut/static/js/runtime-main.86dbb55e.js",
+    "runtime-main.js.map": "/revolut/static/js/runtime-main.86dbb55e.js.map",
+    "static/css/2.fba2a429.chunk.css": "/revolut/static/css/2.fba2a429.chunk.css",
+    "static/js/2.5affeef8.chunk.js": "/revolut/static/js/2.5affeef8.chunk.js",
+    "static/js/2.5affeef8.chunk.js.map": "/revolut/static/js/2.5affeef8.chunk.js.map",
+    "index.html": "/revolut/index.html",
+    "precache-manifest.ecebcc0da5c89df1a9b9f81a28cb22fa.js": "/revolut/precache-manifest.ecebcc0da5c89df1a9b9f81a28cb22fa.js",
+    "service-worker.js": "/revolut/service-worker.js",
+    "static/css/2.fba2a429.chunk.css.map": "/revolut/static/css/2.fba2a429.chunk.css.map",
+    "static/css/main.c7f164f3.chunk.css.map": "/revolut/static/css/main.c7f164f3.chunk.css.map",
+    "static/js/2.5affeef8.chunk.js.LICENSE": "/revolut/static/js/2.5affeef8.chunk.js.LICENSE",
+    "static/media/index.css": "/revolut/static/media/roboto-latin-900italic.ebf6d164.woff2",
+    "static/media/styles.css": "/revolut/static/media/wallet3.d31b303f.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.86dbb55e.js",
+    "static/css/2.fba2a429.chunk.css",
+    "static/js/2.5affeef8.chunk.js",
+    "static/css/main.c7f164f3.chunk.css",
+    "static/js/main.465449a3.chunk.js"
+  ]
+}
